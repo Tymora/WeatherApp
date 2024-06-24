@@ -8,15 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +53,7 @@ fun CityInput() {
     var text by remember { mutableStateOf("") }
 
     OutlinedTextField(
+        shape = RoundedCornerShape(16.dp),
         value = text,
         onValueChange = { text = it },
         label = { Text("Введите название города") }
@@ -65,7 +63,7 @@ fun CityInput() {
 @Composable
 fun ButtonGetCity(onClick: () -> Unit)  {
     FilledTonalButton(
-        modifier = Modifier.padding(16.dp),
+        modifier  =  Modifier.padding(16.dp),
         colors  =  ButtonColors(
             containerColor = colorResource(R.color.teal_700).copy(alpha = 0.5f),
             contentColor = Color.White,
