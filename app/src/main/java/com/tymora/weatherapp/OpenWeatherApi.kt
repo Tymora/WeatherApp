@@ -16,6 +16,6 @@ interface OpenWeatherApi {
 
     companion object{
 
-        const val API_KEY = "123b670dfc1cbed788e15e22e43b4d70"
+        const val API_KEY = ""
     }
 }

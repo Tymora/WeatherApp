@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -22,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,9 +42,8 @@ class MainActivity : ComponentActivity() {
                            modifier = Modifier.fillMaxSize(),
                            verticalArrangement   =  Arrangement.Center,
                            horizontalAlignment  =  Alignment.CenterHorizontally,){
-                       val count = remember{mutableStateOf(0)}
                        CityInput()
-                       ButtonGetCity(onClick = { count.value += 1 } )
+                       ButtonGetCity(onClick = { getCityCoord("Москва") })
                    }
                 }
             }
@@ -50,12 +53,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CityInput() {
-    var text by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
 
     OutlinedTextField(
         shape = RoundedCornerShape(16.dp),
-        value = text,
-        onValueChange = { text = it },
+        value = city,
+        onValueChange = { city = it },
         label = { Text("Введите название города") }
     )
 }
@@ -64,12 +67,7 @@ fun CityInput() {
 fun ButtonGetCity(onClick: () -> Unit)  {
     FilledTonalButton(
         modifier  =  Modifier.padding(16.dp),
-        colors  =  ButtonColors(
-            containerColor = colorResource(R.color.teal_700).copy(alpha = 0.5f),
-            contentColor = Color.White,
-            disabledContentColor = Color.Gray,
-            disabledContainerColor = Color.Gray,
-        ),
+        colors = ButtonDefaults.filledTonalButtonColors().copy(containerColor = colorResource(R.color.teal_200).copy(alpha = 0.5f),),
         onClick = onClick
     ) {
         Text("Узнать погоду")
@@ -81,9 +79,11 @@ fun ButtonGetCity(onClick: () -> Unit)  {
 fun GreetingPreview() {
     val count = remember{mutableStateOf(0)}
     WeatherAppTheme {
-        Column{
+        Column(
+        ){
             CityInput()
             ButtonGetCity(onClick = { count.value += 1 } )
         }
+
     }
 }
