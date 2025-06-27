@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +8,11 @@ plugins {
 android {
     namespace = "com.tymora.weatherapp"
     compileSdk = 34
+
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.tymora.weatherapp"
@@ -18,6 +25,23 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val properties = Properties()
+        val apiKey: String
+
+        val localPropertiesFile = project.rootProject.file("local.properties")
+        apiKey = if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+            properties.getProperty("API_KEY") ?: ""
+        } else {
+            System.getenv("API_KEY") ?: ""
+        }
+
+        buildConfigField(
+            "String",
+            "API_KEY",
+            "\"$apiKey\""
+        )
     }
 
     buildTypes {

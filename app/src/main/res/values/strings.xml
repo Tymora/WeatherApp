@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherApp</string>
+    <string name="todos_title">Мои дела наверное</string>
+    <string name="todos_title_done">"Сделано? "</string>
 </resources>

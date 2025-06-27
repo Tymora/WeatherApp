@@ -29,7 +29,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
+import com.tymora.weatherapp.OpenWeatherApi
+import com.tymora.weatherapp.data.CurrentCityRespItem
 import com.tymora.weatherapp.ui.theme.WeatherAppTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,14 +41,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WeatherAppTheme {
-               Surface {
-                       Column(
-                           modifier = Modifier.fillMaxSize(),
-                           verticalArrangement   =  Arrangement.Center,
-                           horizontalAlignment  =  Alignment.CenterHorizontally,){
-                       CityInput()
-                       ButtonGetCity(onClick = { getCityCoord("Москва") })
-                   }
+                Surface {
+                    var cityData by remember { mutableStateOf<CurrentCityRespItem?>(null) }
+                    var cityInput by remember { mutableStateOf("") }
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        CityInput(
+                            city = cityInput,
+                            onCityChange = { cityInput = it })
+                        ButtonGetCity(onClick = {
+                            lifecycleScope.launch {
+                                val response = OpenWeatherApi.instance.getCoord(cityName = cityInput)
+                                cityData = response.firstOrNull()
+                            }
+                        })
+                        ResultCityWeather(cityData)
+                    }
                 }
             }
         }
@@ -52,38 +67,34 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CityInput() {
-    var city by remember { mutableStateOf("") }
+fun CityInput(city: String, onCityChange: (String) -> Unit) {
 
     OutlinedTextField(
         shape = RoundedCornerShape(16.dp),
         value = city,
-        onValueChange = { city = it },
+        onValueChange = onCityChange,
         label = { Text("Введите название города") }
     )
 }
 
 @Composable
-fun ButtonGetCity(onClick: () -> Unit)  {
+fun ButtonGetCity(onClick: () -> Unit) {
     FilledTonalButton(
-        modifier  =  Modifier.padding(16.dp),
-        colors = ButtonDefaults.filledTonalButtonColors().copy(containerColor = colorResource(R.color.teal_200).copy(alpha = 0.5f),),
+        modifier = Modifier.padding(16.dp),
+        colors = ButtonDefaults.filledTonalButtonColors()
+            .copy(containerColor = colorResource(R.color.teal_200).copy(alpha = 0.5f)),
         onClick = onClick
     ) {
         Text("Узнать погоду")
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    val count = remember{mutableStateOf(0)}
-    WeatherAppTheme {
-        Column(
-        ){
-            CityInput()
-            ButtonGetCity(onClick = { count.value += 1 } )
-        }
 
+@Composable
+fun ResultCityWeather(city: CurrentCityRespItem?) {
+    Column() {
+        Text("Result City Weather")
+        Text("Координаты: lon - ${city?.lon}, lat = ${city?.lat}")
     }
 }
+
