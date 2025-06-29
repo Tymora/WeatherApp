@@ -27,6 +27,7 @@ interface OpenWeatherApi {
     suspend fun getWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
+        @Query("units") units: String = "metric",
         @Query("appid") apiKey: String = BuildConfig.API_KEY
     ): CurrentWeatherResp
 
